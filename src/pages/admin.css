@@ -1,0 +1,25 @@
+.admin-layout{
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
+.work-area{
+    padding: 20px;
+}
+
+.page-title{
+    font-weight: bold;
+    font-size: 30px;
+    color: green;
+    margin-bottom: 10px;
+}
+
+.page-subtitle{
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.page-action{
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+}

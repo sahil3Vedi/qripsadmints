@@ -1,26 +1,45 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+//REACT
+import React, { Component } from 'react'
+//COMPS
+import SignIn from './pages/signin'
+import Admin from './pages/admin'
+//ACTIONS
+import * as actions from './actions/auth'
+//CSS
+import './App.css'
+import 'antd/dist/antd.css'
+import './styles/css/antd.css'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface AppState {
+    loggedIn: boolean
+}
+interface AppProp {}
+
+class App extends Component<AppProp,AppState>{
+
+    constructor(props: AppProp){
+        super(props)
+        this.state={
+            loggedIn: false
+        }
+    }
+
+    componentDidMount(){
+        actions.authCheckState(this.setLogin)
+    }
+
+    setLogin = (value: boolean):void => {
+        this.setState({loggedIn: value})
+    }
+
+    render(){
+        let signin = <SignIn setLogin={this.setLogin}/>
+        let admin = <Admin setLogin={this.setLogin}/>
+        return (
+          <div>{this.state.loggedIn ? admin : signin}</div>
+        )
+    }
+
 }
 
-export default App;
+export default App

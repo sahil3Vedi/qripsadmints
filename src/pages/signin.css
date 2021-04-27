@@ -1,0 +1,33 @@
+.signinPage{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+}
+
+.signinPicture{
+    background: url('../assets/signinpicture.jpeg');
+    background-size: cover;
+}
+
+.signinOverlay{
+    background-color: green;
+    opacity: 0.7;
+    width: 100%;
+    height: 100%;
+}
+
+.signinForm{
+    padding:50px 100px;
+}
+
+.singinTitle{
+    text-align: center;
+    color: green;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.qripsLogo{
+    width: 300px;
+    margin-left: calc(50% - 150px);
+}
