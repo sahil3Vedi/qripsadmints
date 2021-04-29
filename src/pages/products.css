@@ -7,3 +7,7 @@
     grid-template-columns: 1fr 1fr;
     column-gap: 20px;
 }
+
+.product-image{
+    width: 300px;
+}

@@ -24,6 +24,7 @@ interface CompState {
 
 interface CompProp {
     setAddModal: Function
+    reloadProducts: Function
 }
 
 class AddDummyProduct extends Component<CompProp,CompState> {
@@ -45,11 +46,23 @@ class AddDummyProduct extends Component<CompProp,CompState> {
     }
 
     submitProduct = (values: any) => {
+        this.toggleSubmittingProduct()
         const {name, company, unit_price, unit_weight, description, tags, color} = values
         tags.push(company+" "+name)
         const imgs = this.state.imgs.map(d=>d.url)
         const payload = {name, company, unit_price, unit_weight, imgs, description, tags, color}
-        console.log(payload)
+        const config = {headers:{'x-auth-token':localStorage.getItem('token')}}
+        axios.post(`${process.env.REACT_APP_BACKEND}dummy/submit`,payload,config)
+        .then(res=>{
+            message.success(res.data.message)
+            this.toggleSubmittingProduct()
+            this.props.reloadProducts()
+            this.props.setAddModal(false)
+        })
+        .catch(err=>{
+            message.error(err.response ? err.response.data.message : "Server Error")
+            this.toggleSubmittingProduct()
+        })
     }
 
     toggleUploadingImg = () => {
@@ -123,6 +136,7 @@ class AddDummyProduct extends Component<CompProp,CompState> {
             onPreview: this.onPreview,
             onRemove: this.onRemove,
             defaultFileList: [],
+            valueProp: FileList
         }
 
         return(
@@ -187,7 +201,7 @@ class AddDummyProduct extends Component<CompProp,CompState> {
                             <Select mode="tags" placeholder="Enter Tags" style={{ width: '100%' }} open={false}></Select>
                         </Form.Item>
                     </div>
-                    <Button htmlType="submit" type="primary" disabled={!this.state.imgs.length}>Add Dummy Product</Button>
+                    <Button htmlType="submit" type="primary" disabled={!this.state.imgs.length || this.state.uploadingImg}>Add Dummy Product</Button>
                 </Form>
             </div>
         )
