@@ -88,7 +88,7 @@ function DummyProducts() {
             {deleteDummyProductModal}
             <p className="page-title">Dummy Products View</p>
             <div className="page-action">
-                <div><p className="page-subtitle">Total Dummy Products: 25</p></div>
+                <div><p className="page-subtitle">{loadingProducts ? "Loading..." : `Total Dummy Products:${products.length}` }</p></div>
                 <div></div>
                 <div><Button type="primary" icon={<PlusOutlined/>} onClick={()=>setAddModal(true)}>Add Dummy Product</Button></div>
             </div>
