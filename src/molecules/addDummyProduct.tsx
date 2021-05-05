@@ -132,7 +132,7 @@ class AddDummyProduct extends Component<CompProp,CompState> {
             listType:"picture-card",
             multiple: true,
             showUploadList: true,
-            accept: ".svg",
+            accept: ".png",
             onPreview: this.onPreview,
             onRemove: this.onRemove,
             defaultFileList: [],
