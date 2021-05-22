@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, Button, Select, InputNumber, message, Upload } from 'antd'
+import { Form, Input, Button, Select, InputNumber, message, Upload, Checkbox } from 'antd'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
 import axios from 'axios'
 
@@ -20,6 +20,7 @@ interface CompState {
     imgs: ImgFile[],
     uploadingImg: boolean,
     submittingProduct: boolean,
+    is_liquid: boolean
 }
 
 interface CompProp {
@@ -31,11 +32,12 @@ class AddDummyProduct extends Component<CompProp,CompState> {
     constructor(props: CompProp){
         super(props)
         this.state={
-            initVals: {unit_price: 100, unit_weight: 100},
+            initVals: {unit_price: 100, unit_weight: 100, is_liquid: false, unit_capacity: 100},
             color: "",
             imgs: [],
             uploadingImg: false,
             submittingProduct: false,
+            is_liquid: false
         }
     }
 
@@ -47,10 +49,15 @@ class AddDummyProduct extends Component<CompProp,CompState> {
 
     submitProduct = (values: any) => {
         this.toggleSubmittingProduct()
-        const {name, company, unit_price, unit_weight, description, tags, color} = values
+        let {name, company, unit_price, unit_weight, description, tags, color, unit_capacity} = values
+        if (this.state.is_liquid){
+            unit_weight = 0
+        } else {
+            unit_capacity = 0
+        }
         tags.push(company+" "+name)
         const imgs = this.state.imgs.map(d=>d.url)
-        const payload = {name, company, unit_price, unit_weight, imgs, description, tags, color}
+        const payload = {name, company, unit_price, unit_weight, imgs, description, tags, color, is_liquid: this.state.is_liquid, unit_capacity}
         const config = {headers:{'x-auth-token':localStorage.getItem('token')}}
         axios.post(`${process.env.REACT_APP_BACKEND}dummy/submit`,payload,config)
         .then(res=>{
@@ -97,6 +104,13 @@ class AddDummyProduct extends Component<CompProp,CompState> {
 
     setViewUrl = (url: string) => {
         console.log(url)
+    }
+
+    handleIsLiquid = (e: any) => {
+        this.setState({
+            is_liquid: e.target.checked
+        })
+        console.log(e.target.checked)
     }
 
     render(){
@@ -178,10 +192,23 @@ class AddDummyProduct extends Component<CompProp,CompState> {
                             </div>
                             <div>
                                 <p className="key-attribute">Unit Weight</p>
-                                <Form.Item name="unit_weight" rules={[{required: true, message: ""}]}>
-                                    <InputNumber precision={0} placeholder="Enter Unit Weight" min={50} max={1500} formatter={value => `${value} g`} step={10} parser={(value :any) => value.replace(' g', '')}/>
-                                </Form.Item>
+                                {
+                                    this.state.is_liquid ?
+                                    <Form.Item name="unit_capacity" rules={[{required: true, message: ""}]}>
+                                        <InputNumber precision={0} placeholder="Enter Unit Capacity" min={50} max={3000} formatter={value => `${value} ml`} step={10} parser={(value :any) => value.replace(' ml', '')}/>
+                                    </Form.Item>
+                                    :
+                                    <Form.Item name="unit_weight" rules={[{required: true, message: ""}]}>
+                                        <InputNumber precision={0} placeholder="Enter Unit Weight" min={50} max={1500} formatter={value => `${value} g`} step={10} parser={(value :any) => value.replace(' g', '')}/>
+                                    </Form.Item>
+                                }
                             </div>
+                        </div>
+                        <div>
+                            <p className="key-attribute">Liquid Items</p>
+                            <Form.Item name="is_liquid">
+                                <Checkbox checked={this.state.is_liquid} onChange={this.handleIsLiquid}>The Item is Liquid (measured in ml or litres)</Checkbox>
+                            </Form.Item>
                         </div>
                         <div className="form-2">
                             <div>
